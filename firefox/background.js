@@ -43,11 +43,11 @@ function getState(cb) {
 
 function updateState(changes, area) {
     //console.log('updateState', JSON.stringify(changes));
+    var keys = Object.keys(changes);
 
-    state.hideAvatars = changes.hideAvatars.newValue;
-    state.autoExpand = changes.autoExpand.newValue;
-    state.hideLike = changes.hideLike.newValue;
-    state.relinkOCAUHeaderLogo = changes.relinkOCAUHeaderLogo.newValue;
+    keys.forEach(function(key){
+        state[key] = changes[key].newValue;
+    });
 
     if(state.hideAvatars && !avatarListener) {
         avatarListener = catchAvatarRequests();
