@@ -1,6 +1,6 @@
 {
     "manifest_version": 2,
-    "name": "The Unoffical OCAU Plugin",
+    "name": "The Unofficial OCAU Plugin",
     "version": "0.1",
 
     "description": "An unofficial browser plugin for OCAU users",
