@@ -53,7 +53,9 @@ function removeAvatarFromPost(messageUserBlock) {
     // The default message height is 100px. This adds alot of whitespace which is not needed when avatars are removed
     var message = messageUserBlock.parentNode.parentNode;
     var messageContent = message.querySelector('.messageContent');
-    messageContent.style = "min-height: 1px";
+    if(messageContent) {
+        messageContent.style = "min-height: 1px";
+    }
 };
 
 __ocau_plugin.observers.noAvatarsOnThreads = {
