@@ -1,59 +1,58 @@
-var state = {
+
+var defaultState = {
     hideAvatars: false,
     autoExpand: false,
     hideLike: false,
     relinkOCAUHeaderLogo: false
 };
 
-// block all avatar image requests 
-var avatarListener = null;
-function catchAvatarRequests() {
-    var pattern = 'https://forums.overclockers.com.au/data/avatars/*';
+var state = defaultState;
 
-    return browser.webRequest.onBeforeRequest.addListener(function(){
-            return { cancel: true };
-        }, 
-        {urls: [pattern]},
-        ['blocking']);
+function listener() {
+    return { cancel: true };
 }
 
-function getOption(option) {
-    function setOption(result) {
-        //console.log('background', option, !!result[option]);
-        state[option] = !!result[option];
-    }
+function hasListener() {
+    return browser.webRequest.onBeforeRequest.hasListener(listener);
+}
 
-    function onError (error) {
-        console.log(`Error in getting option ${option} from local storage: ${error}`);
-        state[option] = false;
-    }
+function removeListener() {
+    browser.webRequest.onBeforeRequest.removeListener(listener);
+}
 
-    var optionPromise = browser.storage.local.get(option);
-    optionPromise.then(setOption, onError);
+function addListener() {
+    var pattern = 'https://forums.overclockers.com.au/data/avatars/*';
+
+    browser.webRequest.onBeforeRequest.addListener(listener, {urls: [pattern]}, ['blocking']);
 }
 
 function getState(cb) {
-    getOption("hideAvatars");
-    getOption("autoExpand");
-    getOption("hideLike");
-    getOption("relinkOCAUHeaderLogo");
+    function onError (error) {
+        console.log(`Error in getting state from local storage: ${error}`);
 
-    cb();
+        state = defaultState;
+        cb();
+    }
+
+    function onSuccess(response) {
+        state = response;
+        cb();
+    }
+
+    browser.storage.local.get().then(onSuccess, onError);
 }
 
 function updateState(changes, area) {
-    //console.log('updateState', JSON.stringify(changes));
     var keys = Object.keys(changes);
 
     keys.forEach(function(key){
         state[key] = changes[key].newValue;
     });
 
-    if(state.hideAvatars && !avatarListener) {
-        avatarListener = catchAvatarRequests();
-    } else if (!state.hideAvatars && avatarListener) {
-        browser.webRequest.onBeforeRequest.removeListener(avartarListener);
-        avatarListener = null;
+    if(state.hideAvatars && !hasListener()) {
+        addListener();
+    } else if (!state.hideAvatars && hasListener()) {
+        removeListener();
     }
 }
 
@@ -66,7 +65,6 @@ browser.runtime.onMessage.addListener(onStateRequest);
 
 getState(function() {
     if(state.hideAvatars) {
-        console.log('setting listener');
-        avatarListener = catchAvatarRequests();
+        addListener();
     } 
 });

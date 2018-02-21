@@ -1,58 +1,60 @@
-var state = {
+var defaultState = {
     hideAvatars: false,
     autoExpand: false,
     hideLike: false,
     relinkOCAUHeaderLogo: false
 };
 
-// block all avatar image requests 
-var avatarListener = null;
-function catchAvatarRequests() {
-    var pattern = 'https://forums.overclockers.com.au/data/avatars/*';
+var state = defaultState;
 
-    return chrome.webRequest.onBeforeRequest.addListener(function(){
-            return { cancel: true };
-        }, 
-        {urls: [pattern]},
-        ['blocking']);
+function listener() {
+    return { cancel: true };
 }
 
-function getOption(option) {
-    function setOption(result) {
-        //console.log('background', option, !!result[option]);
-        state[option] = !!result[option];
-    }
+function hasListener() {
+    return chrome.webRequest.onBeforeRequest.hasListener(listener);
+}
 
-    function onError (error) {
-        console.log(`Error in getting option ${option} from local storage: ${error}`);
-        state[option] = false;
-    }
+function removeListener() {
+    chrome.webRequest.onBeforeRequest.removeListener(listener);
+}
 
-    chrome.storage.local.get(option, setOption);
+function addListener() {
+    var pattern = 'https://forums.overclockers.com.au/data/avatars/*';
+
+    chrome.webRequest.onBeforeRequest.addListener(listener, {urls: [pattern]}, ['blocking']);
 }
 
 function getState(cb) {
-    getOption("hideAvatars");
-    getOption("autoExpand");
-    getOption("hideLike");
-    getOption("relinkOCAUHeaderLogo");
+    function onError (error) {
+        console.log(`Error in getting state from local storage: ${error}`);
+        state = defaultState;
+        cb();
+    }
 
-    cb();
+    function setState(response) {
+        if(chrome.runtime.lastError) {
+            onError(chrome.runtime.lastError);
+        }
+
+        state = response;
+        cb();
+    }
+
+    chrome.storage.local.get(null, setState);
 }
 
 function updateState(changes, area) {
-    //console.log('updateState', JSON.stringify(changes));
     var keys = Object.keys(changes);
 
     keys.forEach(function(key){
         state[key] = changes[key].newValue;
     });
 
-    if(state.hideAvatars && !avatarListener) {
-        avatarListener = catchAvatarRequests();
-    } else if (!state.hideAvatars && avatarListener) {
-        browser.webRequest.onBeforeRequest.removeListener(avartarListener);
-        avatarListener = null;
+    if(state.hideAvatars && !hasListener()) {
+        addListener();
+    } else if (!state.hideAvatars && hasListener()) {
+        removeListener();
     }
 }
 
@@ -65,7 +67,6 @@ chrome.runtime.onMessage.addListener(onStateRequest);
 
 getState(function() {
     if(state.hideAvatars) {
-        //console.log('setting listener');
-        avatarListener = catchAvatarRequests();
+        addListener();
     } 
 });
