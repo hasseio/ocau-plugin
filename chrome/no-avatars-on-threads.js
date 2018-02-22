@@ -26,10 +26,11 @@ function removeAvatarFromPost(messageUserBlock) {
 
     if(desktopRibbon !== null) {
         desktopRibbon.remove();
+        var userName = messageUserBlock.querySelector('.username');
 
         ribbonWrapper = desktopRibbon.querySelector('.ribbon-wrapper');
-        ribbonWrapper.style = "left: 160px; top: 0px; width: 36px";
-        newDiv.appendChild(desktopRibbon);
+        ribbonWrapper.style = `right: 0px; top:0px; width: 36px`;
+        userName.appendChild(desktopRibbon);
     }
 
     if(mobileRibbon !== null) {
