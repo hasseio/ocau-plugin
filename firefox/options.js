@@ -2,8 +2,7 @@ function saveOptions(e) {
   	browser.storage.local.set({
     	hideAvatars: document.querySelector("#hideAvatars").checked,
     	autoExpand: document.querySelector("#autoExpand").checked,
-    	hideLike: document.querySelector("#hideLike").checked,
-    	relinkOCAUHeaderLogo: document.querySelector("#relinkOCAUHeaderLogo").checked
+    	hideLike: document.querySelector("#hideLike").checked
   	});
 
   	e.preventDefault();
@@ -21,7 +20,6 @@ function restoreOptions() {
     restoreOption('hideAvatars');
     restoreOption('autoExpand');
     restoreOption('hideLike');
-    restoreOption('relinkOCAUHeaderLogo');
 }
 
 document.addEventListener('DOMContentLoaded', restoreOptions);

@@ -8,7 +8,7 @@
     "content_scripts": [
         {
             "js": [ "init.js", "no-likes.js", "auto-expand.js", "no-avatars-on-threads.js", "no-popup-avatars.js", 
-                    "ocau-header.js", "process.js"],
+                    "process.js"],
             "matches": [
                 "https://forums.overclockers.com.au/threads/*",
                 "https://forums.overclockers.com.au/conversations/*"
@@ -18,7 +18,7 @@
 
 
         {
-            "js": ["init.js", "no-poster-avatars.js", "no-popup-avatars.js", "ocau-header.js", "process.js"],
+            "js": ["init.js", "no-poster-avatars.js", "no-popup-avatars.js", "process.js"],
             "matches": [
                 "https://forums.overclockers.com.au/forums/*",
                 "https://forums.overclockers.com.au/watched/threads",
@@ -30,7 +30,7 @@
         },
 
         {
-            "js": ["init.js", "no-sidebar-avatar.js", "no-popup-avatars.js", "ocau-header.js", "process.js"],
+            "js": ["init.js", "no-sidebar-avatar.js", "no-popup-avatars.js", "process.js"],
             "matches": [
                 "https://forums.overclockers.com.au/"
             ],
@@ -38,7 +38,7 @@
         },
 
         {
-            "js": ["init.js", "no-poster-avatars.js", "no-sidebar-avatar.js", "no-popup-avatars.js", "ocau-header.js", "process.js"],
+            "js": ["init.js", "no-poster-avatars.js", "no-sidebar-avatar.js", "no-popup-avatars.js", "process.js"],
             "matches": [
                 "https://forums.overclockers.com.au/members/*",
                 "https://forums.overclockers.com.au/online/*",
